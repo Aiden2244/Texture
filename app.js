@@ -3,6 +3,7 @@ const vertexShaderSource = `#version 300 es
     in vec4 a_position;
     out vec3 v_color;
     
+    
     uniform mat4 modelMatrix;
     uniform mat4 viewMatrix;
     uniform mat4 projectionMatrix;
