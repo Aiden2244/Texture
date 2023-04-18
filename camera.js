@@ -3,11 +3,8 @@ class camera {
         this.gl = gl;
         this.program = program;
 
-        this.initialPoint = [0, 0, 5];
-        this.position = this.initialPoint;
-
+        this.position = [0, 0, 5]
         this.lookAtPoint = [0, 0, 0];
-
         this.upVector = [0, 1, 0];
 
         this.viewMatrix = glMatrix.mat4.create();
@@ -80,6 +77,31 @@ class camera {
         glMatrix.vec3.scaleAndAdd(this.lookAtPoint, this.lookAtPoint, lookDirection, pushIncrement);
 
         // Update the view matrix with the new position and lookAtPoint
+        this.updateCamera();
+    }
+
+    pedestal(direction) {
+
+        const pedestalIncrement = 0.05 * direction;
+
+        // shift the camera's position up or down
+        glMatrix.vec3.scaleAndAdd(this.position, this.position, this.upVector, pedestalIncrement);
+
+        // shift the camera's lookAtPoint up or down
+        glMatrix.vec3.scaleAndAdd(this.lookAtPoint, this.lookAtPoint, this.upVector, pedestalIncrement);
+
+        // Update the view matrix with the new position and lookAtPoint
+        this.updateCamera();
+
+        if (this.position[1] <= 0) {
+            this.position[1] = 0;
+            this.lookAtPoint[1] = 0;
+        }
+    }
+
+    reset() {
+        this.position = [0, 0, 5];
+        this.lookAtPoint = [0, 0, 0];
         this.updateCamera();
     }
 

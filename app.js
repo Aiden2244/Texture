@@ -1,9 +1,10 @@
-// basic vertex shader
+// vertex shader
 const vertexShaderSource = `#version 300 es
-    in vec4 a_position;
-    out vec4 v_color;
-    
-    
+    in vec4 a_position; // Add position attribute
+    in vec2 a_texCoord; // Add texture coordinate attribute
+    out vec4 v_color; // Pass color to fragment shader
+    out vec2 v_texCoord; // Pass texture coordinate to fragment shader
+
     uniform mat4 modelMatrix;
     uniform mat4 viewMatrix;
     uniform mat4 projectionMatrix;
@@ -11,7 +12,7 @@ const vertexShaderSource = `#version 300 es
     uniform vec3 u_lightDirection;
     uniform vec3 u_lightColor;
     uniform vec3 u_ambientLight;
-    uniform vec3 u_color; // Add the object color uniform
+    uniform vec3 u_color;
 
     void main() {
         gl_Position = projectionMatrix * viewMatrix * modelMatrix * a_position;
@@ -20,21 +21,29 @@ const vertexShaderSource = `#version 300 es
 
         float diffuse = max(dot(normal, u_lightDirection), 0.0);
 
-        // Multiply object color with the ambient and diffuse lighting components
         v_color = vec4(u_color * (u_ambientLight + u_lightColor * diffuse), 1.0);
+        v_texCoord = a_texCoord; // Pass the texture coordinate
     }
 `;
 
-// basic fragment shader
+// fragment shader
 const fragmentShaderSource = `#version 300 es
     precision mediump float;
 
     in vec4 v_color;
+    in vec2 v_texCoord; // Receive texture coordinate from vertex shader
+
+    uniform sampler2D u_texture; // Add texture sampler
+
     out vec4 fragColor;
     void main() {
+        vec4 texColor = texture(u_texture, v_texCoord); // Sample the texture
+        //fragColor = v_color * texColor; // Multiply color with texture color
+
         fragColor = v_color;
     }
 `;
+
 
 
 function initWebGL() {
@@ -46,9 +55,9 @@ function initWebGL() {
     gl.clearColor(0, 0, 0, 1); // color of the canvas
 
     // makes the shapes render correctly
+    gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     gl.frontFace(gl.CCW);
-    gl.enable(gl.CULL_FACE);
     gl.enable(gl.DEPTH_TEST);
     /*******/
 

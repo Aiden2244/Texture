@@ -53,6 +53,22 @@ class scene {
                 this.camera.pushIn(-1);
             }
 
+            // up and down movement
+            // when 'i' is pressed. move camera up
+            else if (event.key === 'i') {
+                this.camera.pedestal(1);
+            }
+            // when 'k' is pressed. move camera down
+            else if (event.key === 'k') {
+                this.camera.pedestal(-1);
+            }
+
+            // reset
+            // when space is pressed. reset camera
+            else if (event.key === ' ') {
+                this.camera.reset();
+            }
+
         });
 
     }
