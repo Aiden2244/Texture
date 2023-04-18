@@ -3,7 +3,12 @@ class shape {
     constructor(gl, program) {
         this.gl = gl; // gl context
         this.program = program; // WebGL program
+
         this.color = [Math.random(), Math.random(), Math.random()]; // default color of the shape
+        this.lightingDirection = [0, 3, 0]; // default lighting direction
+        this.lightingColor = [1, 1, 0.8]; // default lighting color
+        this.ambientLight = [0.2, 0.2, 0.2]; // default ambient light
+
         this.modelMatrix = glMatrix.mat4.create(); // each shape has its own model matrix
     }
 
@@ -113,6 +118,15 @@ class shape {
         const offset = 0;
         this.gl.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset);
         this.gl.enableVertexAttribArray(positionAttributeLocation);
+
+        // set up lighting
+        const u_lightColorLocation = this.gl.getUniformLocation(this.program, "u_lightColor");
+        const u_ambientLightLocation = this.gl.getUniformLocation(this.program, "u_ambientLight");
+        const u_lightDirectionLocation = this.gl.getUniformLocation(this.program, "u_lightDirection");
+        
+        this.gl.uniform3fv(u_lightColorLocation, this.lightingColor);
+        this.gl.uniform3fv(u_lightDirectionLocation, this.lightingDirection);
+        this.gl.uniform3fv(u_ambientLightLocation, this.ambientLight);
 
         
         // draw

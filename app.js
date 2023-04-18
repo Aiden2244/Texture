@@ -1,17 +1,27 @@
 // basic vertex shader
 const vertexShaderSource = `#version 300 es
     in vec4 a_position;
-    out vec3 v_color;
+    out vec4 v_color;
     
     
     uniform mat4 modelMatrix;
     uniform mat4 viewMatrix;
     uniform mat4 projectionMatrix;
-    uniform vec3 u_color;
-    
+
+    uniform vec3 u_lightDirection;
+    uniform vec3 u_lightColor;
+    uniform vec3 u_ambientLight;
+    uniform vec3 u_color; // Add the object color uniform
+
     void main() {
         gl_Position = projectionMatrix * viewMatrix * modelMatrix * a_position;
-        v_color = u_color;
+
+        vec3 normal = normalize(vec3(modelMatrix * a_position));
+
+        float diffuse = max(dot(normal, u_lightDirection), 0.0);
+
+        // Multiply object color with the ambient and diffuse lighting components
+        v_color = vec4(u_color * (u_ambientLight + u_lightColor * diffuse), 1.0);
     }
 `;
 
@@ -19,10 +29,10 @@ const vertexShaderSource = `#version 300 es
 const fragmentShaderSource = `#version 300 es
     precision mediump float;
 
-    in vec3 v_color;
+    in vec4 v_color;
     out vec4 fragColor;
     void main() {
-        fragColor = vec4(v_color, 1);
+        fragColor = v_color;
     }
 `;
 
@@ -62,7 +72,7 @@ function initWebGL() {
     // insert shapes here
 
     const floor = new cube(gl, program);
-    floor.setColor([0.2, 0.2, 0.2]);
+    floor.setColor([1.0, 1.0, 1.0]);
     floor.translate([0, -2, 5]);
     floor.rotate([0, 0, 0]);
     floor.scale([1000, 0.1, 1000]);
@@ -70,7 +80,7 @@ function initWebGL() {
     
     const myCube = new cube(gl, program); // makes a cube shape using the cube class
     myCube.setColor([0.5, 1.0, 0]); // sets the color of the cube
-    myCube.translate([1, 0, 0]); // translates the initial position of the cube
+    myCube.translate([0.75, 0.75, 0]); // translates the initial position of the cube
     myCube.rotate([0, 0, 0]); // sets the initial rotation of the cube
     myCube.scale([1, 1, 1]); // sets the initial scale of the cube
     myScene.addObject(myCube); // adds the cube to the scene

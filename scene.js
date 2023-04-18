@@ -62,11 +62,17 @@ class scene {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT); // clear the canvas
         
         
-        /* FLOOR ANIMATIONS */
-        
-        
         /* INSERT SHAPE ANIMATIONS HERE */
-        
+        this.objects[1].animateXRotation();
+        this.objects[1].animateYRotation();
+        this.objects[1].animateZRotation();
+
+        this.objects[2].animateYTranslation(this.flag);
+        this.objects[2].animateZScaling(this.flag);
+
+        this.objects[3].animateXTranslation(this.flag);
+        this.objects[3].animateYScaling(this.flag);
+        this.objects[3].animateZRotation(this.flag);
         /******/
     
     
