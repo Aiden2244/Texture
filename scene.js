@@ -87,8 +87,8 @@ class scene {
         this.objects[2].animateZScaling(this.flag);
 
         this.objects[3].animateXTranslation(this.flag);
-        this.objects[3].animateYScaling(this.flag);
-        this.objects[3].animateZRotation(this.flag);
+        this.objects[3].animateZScaling(this.flag);
+        this.objects[3].animateZRotation(2);
         /******/
     
     
