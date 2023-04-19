@@ -1,52 +1,4 @@
-// vertex shader
-const vertexShaderSource = `#version 300 es
-    in vec4 a_position; // Add position attribute
-    in vec2 a_texCoord; // Add texture coordinate attribute
-    out vec4 v_color; // Pass color to fragment shader
-    out vec2 v_texCoord; // Pass texture coordinate to fragment shader
-
-    uniform mat4 modelMatrix;
-    uniform mat4 viewMatrix;
-    uniform mat4 projectionMatrix;
-
-    uniform vec3 u_lightDirection;
-    uniform vec3 u_lightColor;
-    uniform vec3 u_ambientLight;
-    uniform vec3 u_color;
-
-    void main() {
-        gl_Position = projectionMatrix * viewMatrix * modelMatrix * a_position;
-
-        vec3 normal = normalize(vec3(modelMatrix * a_position));
-
-        float diffuse = max(dot(normal, u_lightDirection), 0.0);
-
-        v_color = vec4(u_color * (u_ambientLight + u_lightColor * diffuse), 1.0);
-        v_texCoord = a_texCoord; // Pass the texture coordinate
-    }
-`;
-
-// fragment shader
-const fragmentShaderSource = `#version 300 es
-    precision mediump float;
-
-    in vec4 v_color;
-    in vec2 v_texCoord; // Receive texture coordinate from vertex shader
-
-    uniform sampler2D u_texture; // Add texture sampler
-
-    out vec4 fragColor;
-    void main() {
-        vec4 texColor = texture(u_texture, v_texCoord); // Sample the texture
-        //fragColor = v_color * texColor; // Multiply color with texture color
-
-        fragColor = v_color;
-    }
-`;
-
-
-
-function initWebGL() {
+async function initWebGL() {
 
     /* SETUP */
     const canvas = document.getElementById("canvas"); // get canvas
@@ -63,12 +15,7 @@ function initWebGL() {
 
 
     /* SHADER AND PROGRAM */
-    // build shaders
-    const vertexShader = buildShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
-    const fragmentShader = buildShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
-
-    // create and use program
-    const program = buildProgram(gl, vertexShader, fragmentShader);
+    const program = await setup(gl);
     gl.useProgram(program);
     /******/
 

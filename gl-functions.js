@@ -36,3 +36,30 @@ function createBuffer(gl, data, type) {
     gl.bufferData(type, data, gl.STATIC_DRAW);
     return buffer;
 }
+
+// load GLSL files into program
+async function loadGLSLFile(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error fetching ${url}: ${response.statusText}`);
+      }
+      const glslString = await response.text();
+      return glslString;
+    } catch (error) {
+      console.error(`Error loading GLSL file: ${error}`);
+      return null;
+    }
+  }
+  
+// initialize shaders
+async function setup(gl) {
+    const vertexShaderSource = await loadGLSLFile('vertexShader.glsl');
+    const fragmentShaderSource = await loadGLSLFile('fragmentShader.glsl');
+
+    const vertexShader = buildShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
+    const fragmentShader = buildShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
+    const program = buildProgram(gl, vertexShader, fragmentShader);
+    return program;   
+}
+  
